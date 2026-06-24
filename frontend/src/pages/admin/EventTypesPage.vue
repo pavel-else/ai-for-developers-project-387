@@ -116,6 +116,7 @@ async function remove(et: EventType) {
                 v-model="form.duration"
                 type="number"
                 min="5"
+                max="480"
                 step="5"
                 required
               />

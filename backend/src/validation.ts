@@ -3,13 +3,13 @@ import { z } from "zod";
 export const EventTypeCreateSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
-  duration: z.number().int().positive(),
+  duration: z.number().int().positive().max(480),
 });
 
 export const EventTypeUpdateSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
-  duration: z.number().int().positive(),
+  duration: z.number().int().positive().max(480),
 });
 
 export const SlotCreateSchema = z.object({
