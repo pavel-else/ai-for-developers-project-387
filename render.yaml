@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: calcom
+    env: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production

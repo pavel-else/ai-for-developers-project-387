@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "dependencies": {
+    "@typespec/compiler": "^1.13.0",
+    "@typespec/http": "^1.13.0",
+    "@typespec/rest": "^0.83.0",
+    "@typespec/openapi3": "^1.13.0"
+  }
+}

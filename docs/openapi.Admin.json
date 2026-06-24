@@ -1,0 +1,441 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Admin API",
+    "description": "Административное API для владельца календаря",
+    "version": "0.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/admin/bookings": {
+      "get": {
+        "operationId": "Bookings_list",
+        "description": "Все предстоящие встречи (active, startTime >= сейчас), отсортированные по startTime",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Booking"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/bookings/{id}/cancel": {
+      "patch": {
+        "operationId": "Bookings_cancel",
+        "description": "Отменить бронь",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Booking"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/event-types": {
+      "get": {
+        "operationId": "EventTypes_list",
+        "description": "Список всех типов событий",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EventType"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "EventTypes_create",
+        "description": "Создать тип события",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventType"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventTypeCreate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/event-types/{id}": {
+      "put": {
+        "operationId": "EventTypes_update",
+        "description": "Обновить тип события",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventType"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventTypeUpdate"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "EventTypes_delete",
+        "description": "Удалить тип события",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        }
+      }
+    },
+    "/admin/slots": {
+      "get": {
+        "operationId": "Slots_list",
+        "description": "Список своих слотов с бронями. Каждый слот содержит вложенные Booking[].",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Slot"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "Slots_create",
+        "description": "Создать новый слот",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Slot"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SlotCreate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/slots/{id}": {
+      "delete": {
+        "operationId": "Slots_delete",
+        "description": "Удалить слот. Блокировано, пока есть активные брони",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "uint32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "There is no content to send for this request, but the headers may be useful. "
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Booking": {
+        "type": "object",
+        "required": [
+          "id",
+          "slotId",
+          "eventTypeId",
+          "startTime",
+          "endTime",
+          "bookerName",
+          "bookerEmail",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "slotId": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "eventTypeId": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-07-01T10:00:00Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-07-01T10:15:00Z"
+          },
+          "bookerName": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Иван Петров"
+          },
+          "bookerEmail": {
+            "type": "string",
+            "format": "email",
+            "example": "ivan@example.com"
+          },
+          "status": {
+            "$ref": "#/components/schemas/BookingStatus"
+          }
+        }
+      },
+      "BookingStatus": {
+        "type": "string",
+        "enum": [
+          "active",
+          "cancelled"
+        ]
+      },
+      "EventType": {
+        "type": "object",
+        "required": [
+          "id",
+          "ownerId",
+          "name",
+          "description",
+          "duration"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "ownerId": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "15 минут"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Короткая встреча на 15 минут"
+          },
+          "duration": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 480,
+            "example": 30
+          }
+        }
+      },
+      "EventTypeCreate": {
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "duration"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "45 минут"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Встреча на 45 минут"
+          },
+          "duration": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 480,
+            "example": 45
+          }
+        }
+      },
+      "EventTypeUpdate": {
+        "type": "object",
+        "required": [
+          "name",
+          "description",
+          "duration"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "example": "45 минут"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Встреча на 45 минут"
+          },
+          "duration": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1,
+            "maximum": 480,
+            "example": 45
+          }
+        }
+      },
+      "Slot": {
+        "type": "object",
+        "required": [
+          "id",
+          "ownerId",
+          "startTime",
+          "endTime"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "ownerId": {
+            "type": "integer",
+            "format": "uint32"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-07-01T09:00:00Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-07-01T18:00:00Z"
+          }
+        }
+      },
+      "SlotCreate": {
+        "type": "object",
+        "required": [
+          "startTime",
+          "endTime"
+        ],
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-07-01T09:00:00Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2026-07-01T18:00:00Z"
+          }
+        }
+      }
+    }
+  }
+}
