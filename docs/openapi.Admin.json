@@ -278,7 +278,7 @@
           "bookerName": {
             "type": "string",
             "minLength": 1,
-            "example": "Иван Петров"
+            "example": "Петр Иванов"
           },
           "bookerEmail": {
             "type": "string",

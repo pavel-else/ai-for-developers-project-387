@@ -15,7 +15,7 @@ test.describe('Guest — my bookings', () => {
     await page.fill('#email-input', 'ivan@example.com')
     await page.getByRole('button', { name: 'Search' }).click()
 
-    await expect(page.getByText('Иван Петров')).toBeVisible()
+    await expect(page.getByText('Петр Иванов')).toBeVisible()
     await expect(page.getByText('Мария Иванова')).toBeVisible()
   })
 

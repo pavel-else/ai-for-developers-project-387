@@ -19,7 +19,7 @@ export const mockBooking = {
   eventTypeId: 1,
   startTime: '2026-07-01T10:00:00Z',
   endTime: '2026-07-01T10:15:00Z',
-  bookerName: 'Иван Петров',
+  bookerName: 'Петр Иванов',
   bookerEmail: 'ivan@example.com',
   status: 'active' as const,
 }
@@ -41,7 +41,7 @@ export const mockAdminSlots = [
       {
         id: 1, slotId: 1, eventTypeId: 1,
         startTime: '2026-07-01T10:00:00Z', endTime: '2026-07-01T10:15:00Z',
-        bookerName: 'Иван Петров', bookerEmail: 'ivan@example.com',
+        bookerName: 'Петр Иванов', bookerEmail: 'ivan@example.com',
         status: 'active' as const,
       },
       {
@@ -62,7 +62,7 @@ export const mockAdminBookings = [
     eventTypeId: 1,
     startTime: '2026-07-01T10:00:00Z',
     endTime: '2026-07-01T10:15:00Z',
-    bookerName: 'Иван Петров',
+    bookerName: 'Петр Иванов',
     bookerEmail: 'ivan@example.com',
     status: 'active' as const,
   },
