@@ -20,6 +20,7 @@
 
 - `.github/workflows/e2e.yml` — E2E-тесты на push/PR в main
 - `.github/workflows/release-please.yml` — автоматические релизы (conventional commits → Release PR → GitHub Release)
+- `.github/workflows/commitlint.yml` — проверка conventional commits на PR в main
 - Все workflow используют `GITHUB_TOKEN`, дополнительных секретов не требуют
 
 ## Процесс
@@ -31,6 +32,7 @@
 
 - Коммитить и пушить только когда пользователь явно сказал.
 - Ветка: `main`
+- Сообщения коммитов — conventional commits (`type: description`). Проверяется локально (`npm run lint:commits`) и в CI.
 
 ## Соглашения
 
