@@ -32,6 +32,11 @@ test.describe('Admin — slots management', () => {
     await page.goto('/admin/slots')
     await expect(page.getByText('No slots yet.')).not.toBeVisible()
 
+    await expect(page.getByText('Петр Иванов')).toBeVisible()
+    await expect(page.getByText('Мария Иванова')).toBeVisible()
+    await expect(page.getByText('active')).toBeVisible()
+    await expect(page.getByText('cancelled')).toBeVisible()
+
     page.on('dialog', (dialog) => dialog.accept())
     await page.getByRole('button', { name: 'Delete' }).first().click()
 

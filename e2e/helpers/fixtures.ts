@@ -19,7 +19,7 @@ export const mockBooking = {
   eventTypeId: 1,
   startTime: '2026-07-01T10:00:00Z',
   endTime: '2026-07-01T10:15:00Z',
-  bookerName: 'Иван Петров',
+  bookerName: 'Петр Иванов',
   bookerEmail: 'ivan@example.com',
   status: 'active' as const,
 }
@@ -35,8 +35,24 @@ export const mockCancelledBooking = {
 }
 
 export const mockAdminSlots = [
-  { id: 1, ownerId: 1, startTime: '2026-07-01T09:00:00Z', endTime: '2026-07-01T18:00:00Z' },
-  { id: 2, ownerId: 1, startTime: '2026-07-02T09:00:00Z', endTime: '2026-07-02T18:00:00Z' },
+  {
+    id: 1, ownerId: 1, startTime: '2026-07-01T09:00:00Z', endTime: '2026-07-01T18:00:00Z',
+    bookings: [
+      {
+        id: 1, slotId: 1, eventTypeId: 1,
+        startTime: '2026-07-01T10:00:00Z', endTime: '2026-07-01T10:15:00Z',
+        bookerName: 'Петр Иванов', bookerEmail: 'ivan@example.com',
+        status: 'active' as const,
+      },
+      {
+        id: 2, slotId: 1, eventTypeId: 2,
+        startTime: '2026-07-01T14:00:00Z', endTime: '2026-07-01T14:30:00Z',
+        bookerName: 'Мария Иванова', bookerEmail: 'maria@example.com',
+        status: 'cancelled' as const,
+      },
+    ],
+  },
+  { id: 2, ownerId: 1, startTime: '2026-07-02T09:00:00Z', endTime: '2026-07-02T18:00:00Z', bookings: [] },
 ]
 
 export const mockAdminBookings = [
@@ -46,7 +62,7 @@ export const mockAdminBookings = [
     eventTypeId: 1,
     startTime: '2026-07-01T10:00:00Z',
     endTime: '2026-07-01T10:15:00Z',
-    bookerName: 'Иван Петров',
+    bookerName: 'Петр Иванов',
     bookerEmail: 'ivan@example.com',
     status: 'active' as const,
   },

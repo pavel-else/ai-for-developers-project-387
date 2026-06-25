@@ -4,11 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "lint:commits": "commitlint --from origin/main --to HEAD",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.1.0",
+    "@commitlint/config-conventional": "^21.1.0",
     "@playwright/test": "^1.53.0"
   }
 }

@@ -21,7 +21,7 @@ test.describe('Guest — booking flow', () => {
 
     await page.locator('button').filter({ hasText: /10:00/ }).first().click()
 
-    await page.fill('#booking-name', 'Иван Петров')
+    await page.fill('#booking-name', 'Петр Иванов')
     await page.fill('#booking-email', 'ivan@example.com')
     await page.getByRole('button', { name: 'Confirm Booking' }).click()
 

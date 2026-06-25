@@ -10,7 +10,7 @@ test.describe('Admin — bookings management', () => {
     await mockGetAdminBookings(page, mockAdminBookings)
 
     await page.goto('/admin/bookings')
-    await expect(page.getByText('Иван Петров')).toBeVisible()
+    await expect(page.getByText('Петр Иванов')).toBeVisible()
     await expect(page.getByText('Мария Иванова')).toBeVisible()
   })
 

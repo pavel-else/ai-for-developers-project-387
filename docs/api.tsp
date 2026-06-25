@@ -68,7 +68,7 @@ model Booking {
   @example(utcDateTime.fromISO("2026-07-01T10:15:00Z"))
   endTime: utcDateTime;
 
-  @example("Иван Петров")
+  @example("Петр Иванов")
   @minLength(1)
   bookerName: string;
 
@@ -129,7 +129,7 @@ model BookingCreate {
   @example(utcDateTime.fromISO("2026-07-01T10:15:00Z"))
   endTime: utcDateTime;
 
-  @example("Иван Петров")
+  @example("Петр Иванов")
   @minLength(1)
   name: string;
 

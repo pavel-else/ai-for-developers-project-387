@@ -443,7 +443,7 @@
           "bookerName": {
             "type": "string",
             "minLength": 1,
-            "example": "Иван Петров"
+            "example": "Петр Иванов"
           },
           "bookerEmail": {
             "type": "string",
@@ -646,7 +646,7 @@
           "name": {
             "type": "string",
             "minLength": 1,
-            "example": "Иван Петров"
+            "example": "Петр Иванов"
           },
           "email": {
             "type": "string",
