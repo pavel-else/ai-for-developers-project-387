@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { getSlots, createSlot, deleteSlot } from '@/api/admin'
-import type { Slot, SlotCreate } from '@/api/admin'
+import type { SlotWithBookings, Slot, SlotCreate } from '@/api/admin'
 import AdminNav from '@/components/AdminNav.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -16,7 +16,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 
-const slots = ref<Slot[]>([])
+const slots = ref<SlotWithBookings[]>([])
 const loading = ref(true)
 const error = ref('')
 const dialogOpen = ref(false)
@@ -119,14 +119,34 @@ async function remove(slot: Slot) {
 
     <div v-else class="space-y-3">
       <Card v-for="slot in slots" :key="slot.id">
-        <CardContent class="flex items-center justify-between py-4">
-          <div>
-            <p class="font-medium">{{ new Date(slot.startTime).toLocaleString() }}</p>
-            <p class="text-sm text-muted-foreground">
-              {{ new Date(slot.startTime).toLocaleTimeString() }} – {{ new Date(slot.endTime).toLocaleTimeString() }}
-            </p>
+        <CardContent class="py-4">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <p class="font-medium">{{ new Date(slot.startTime).toLocaleString() }}</p>
+              <p class="text-sm text-muted-foreground">
+                {{ new Date(slot.startTime).toLocaleTimeString() }} – {{ new Date(slot.endTime).toLocaleTimeString() }}
+              </p>
+            </div>
+            <Button variant="outline" size="sm" @click="remove(slot)">Delete</Button>
           </div>
-          <Button variant="outline" size="sm" @click="remove(slot)">Delete</Button>
+          <div v-if="slot.bookings && slot.bookings.length > 0" class="border-t pt-3 space-y-2">
+            <p class="text-sm font-medium text-muted-foreground">Bookings</p>
+            <div v-for="booking in slot.bookings" :key="booking.id" class="flex items-center justify-between text-sm pl-2">
+              <div>
+                <p>{{ booking.bookerName }} ({{ booking.bookerEmail }})</p>
+                <p class="text-muted-foreground">
+                  {{ new Date(booking.startTime).toLocaleTimeString() }} – {{ new Date(booking.endTime).toLocaleTimeString() }}
+                </p>
+              </div>
+              <span
+                class="text-xs px-2 py-0.5 rounded"
+                :class="booking.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'"
+              >
+                {{ booking.status }}
+              </span>
+            </div>
+          </div>
+          <p v-else class="text-xs text-muted-foreground border-t pt-2">No bookings</p>
         </CardContent>
       </Card>
     </div>

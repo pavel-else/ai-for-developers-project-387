@@ -8,6 +8,10 @@ export type Slot = components['schemas']['Slot']
 export type SlotCreate = components['schemas']['SlotCreate']
 export type Booking = components['schemas']['Booking']
 
+export interface SlotWithBookings extends Slot {
+  bookings: Booking[]
+}
+
 export async function getEventTypes(): Promise<EventType[]> {
   return await api.get('admin/event-types').json()
 }
@@ -24,7 +28,7 @@ export async function deleteEventType(id: number): Promise<void> {
   await api.delete(`admin/event-types/${id}`)
 }
 
-export async function getSlots(): Promise<Slot[]> {
+export async function getSlots(): Promise<SlotWithBookings[]> {
   return await api.get('admin/slots').json()
 }
 
