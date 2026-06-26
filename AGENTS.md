@@ -21,7 +21,18 @@
 - `.github/workflows/e2e.yml` — E2E-тесты на push/PR в main
 - `.github/workflows/release-please.yml` — автоматические релизы (conventional commits → Release PR → GitHub Release)
 - `.github/workflows/commitlint.yml` — проверка conventional commits на PR в main
-- Все workflow используют `GITHUB_TOKEN`, дополнительных секретов не требуют
+- `.github/workflows/deploy.yml` — деплой на Render при пуше в `main`
+- Все workflow используют `GITHUB_TOKEN`, дополнительных секретов не требуют; `deploy.yml` дополнительно требует `RENDER_API_KEY` и `RENDER_SERVICE_ID`
+
+## Deploy (Render)
+
+- `render.yaml` — Blueprint для сервиса `calcom` (Docker, порт 3001)
+- Деплой инициирует `deploy.yml` при пуше в `main` через Render API (`POST /v1/services/{id}/deploys`)
+- Разовая настройка (вне репо):
+  1. На render.com привязать GitHub → **New + → Blueprint** → выбрать репозиторий (Render создаст сервис из `render.yaml`)
+  2. В Account Settings → API Keys создать ключ
+  3. Скопировать `serviceId` (`srv-xxxx`) из URL сервиса
+  4. В GitHub repo Settings → Secrets and variables → Actions добавить `RENDER_API_KEY` и `RENDER_SERVICE_ID`
 
 ## Процесс
 
