@@ -23,7 +23,7 @@
 - `.github/workflows/commitlint.yml` — проверка conventional commits на PR в main
 - `.github/workflows/opencode.yml` — интерактивная работа с агентом по комментариям (`/oc`, `/opencode`) в issues и PR
 - `.github/workflows/deploy.yml` — деплой на Render при пуше в `main`
-- `.github/workflows/lighthouse.yml` — регулярный Lighthouse-аудит (cron `0 3 * * *` + `workflow_dispatch`): генерирует HTML/JSON-отчёт (artifact `lighthouse-report`, 30 дней) и опционально анализирует агентом OpenCode с созданием issue при деградации метрик >10% относительно `docs/performance-baseline.md`
+- `.github/workflows/lighthouse.yml` — регулярный Lighthouse-аудит (cron `0 3 * * *` + `workflow_dispatch`): генерирует HTML/JSON-отчёт (artifact `lighthouse-report`, 30 дней) и на каждый запуск создаёт issue со сводкой метрик относительно `docs/performance-baseline.md` (issue авто-закрывается; письмо-уведомление приходит через подписку GitHub на Issues репо), при деградации >10% issue дополняется рекомендациями
 - Большинство workflow используют `GITHUB_TOKEN` и не требуют дополнительных секретов; исключения: `deploy.yml` требует `RENDER_API_KEY` и `RENDER_SERVICE_ID`, `opencode.yml` и `lighthouse.yml` требуют `OPENCODE_API_KEY`
 
 ## Deploy (Render)

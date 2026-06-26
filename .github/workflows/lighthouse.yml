@@ -51,6 +51,7 @@ jobs:
           retention-days: 30
 
       - name: Analyze with OpenCode
+        id: analyze
         if: ${{ github.event.inputs.analyze != 'false' }}
         uses: anomalyco/opencode/github@latest
         env:
@@ -59,9 +60,46 @@ jobs:
           model: opencode/deepseek-v4-flash-free
           prompt: |
             Read ./lighthouse-report.json.
-            Compare LCP, CLS, INP, TBT, FCP, SI with docs/performance-baseline.md.
-            For metrics that degraded by more than 10% relative to baseline,
-            identify likely culprits in recent commits and create an issue
-            with specific recommendations.
-            If no metric degraded — do not create an issue.
-            Reference the lighthouse-report artifact in the issue description.
+            Compare FCP, LCP, CLS, INP, TBT, SI with docs/performance-baseline.md.
+            ALWAYS create a single issue (regardless of degradation) titled
+            "Lighthouse Report — <YYYY-MM-DD>" (use today's date) containing:
+            1. A markdown table with columns: Metric | Current | Baseline | Delta %.
+               Fill in all six metrics (FCP, LCP, CLS, INP, TBT, SI).
+            2. A line listing metrics that degraded by more than 10% relative
+               to baseline, or "No degradation detected" if none.
+            3. A link to the lighthouse-report artifact (HTML) for the team
+               to open in a browser in the morning.
+            4. If any metric degraded by more than 10%, add a "Recommendations"
+               section identifying likely culprits in recent commits and
+               suggesting specific fixes.
+            Apply the label "lighthouse-report" if it exists in the repository.
+            If that label does not exist, create the issue without a label
+            (do not fail).
+            Create exactly one issue per run.
+
+      - name: Close report issue
+        if: ${{ github.event.inputs.analyze != 'false' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const since = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              creator: 'github-actions[bot]',
+              since,
+              per_page: 100,
+            });
+            for (const issue of issues.data) {
+              if (issue.labels.some(l => l.name === 'lighthouse-report') ||
+                  /Lighthouse Report —/.test(issue.title)) {
+                await github.rest.issues.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  state: 'closed',
+                });
+                core.info(`Closed issue #${issue.number}: ${issue.title}`);
+              }
+            }
