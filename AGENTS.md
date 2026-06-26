@@ -21,8 +21,10 @@
 - `.github/workflows/e2e.yml` — E2E-тесты на push/PR в main
 - `.github/workflows/release-please.yml` — автоматические релизы (conventional commits → Release PR → GitHub Release)
 - `.github/workflows/commitlint.yml` — проверка conventional commits на PR в main
+- `.github/workflows/opencode.yml` — интерактивная работа с агентом по комментариям (`/oc`, `/opencode`) в issues и PR
 - `.github/workflows/deploy.yml` — деплой на Render при пуше в `main`
-- Все workflow используют `GITHUB_TOKEN`, дополнительных секретов не требуют; `deploy.yml` дополнительно требует `RENDER_API_KEY` и `RENDER_SERVICE_ID`
+- `.github/workflows/lighthouse.yml` — регулярный Lighthouse-аудит (cron `0 3 * * *` + `workflow_dispatch`): генерирует HTML/JSON-отчёт (artifact `lighthouse-report`, 30 дней) и опционально анализирует агентом OpenCode с созданием issue при деградации метрик >10% относительно `docs/performance-baseline.md`
+- Большинство workflow используют `GITHUB_TOKEN` и не требуют дополнительных секретов; исключения: `deploy.yml` требует `RENDER_API_KEY` и `RENDER_SERVICE_ID`, `opencode.yml` и `lighthouse.yml` требуют `OPENCODE_API_KEY`
 
 ## Deploy (Render)
 

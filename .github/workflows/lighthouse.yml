@@ -1,0 +1,67 @@
+name: Lighthouse Audit
+
+on:
+  schedule:
+    - cron: "0 3 * * *" # Ежедневно 03:00 UTC (06:00 МСК)
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL для аудита"
+        required: false
+        type: string
+        default: "https://ai-for-developers-project-386-h7vt.onrender.com/"
+      analyze:
+        description: "Запустить анализ агентом OpenCode"
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Determine URL
+        id: url
+        run: |
+          URL="${{ inputs.url || 'https://ai-for-developers-project-386-h7vt.onrender.com/' }}"
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: Run Lighthouse
+        run: |
+          npx lighthouse ${{ steps.url.outputs.url }} \
+            --output=html --output=json \
+            --output-path=./lighthouse-report \
+            --chrome-flags="--headless=new"
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-report
+          path: ./lighthouse-report.*
+          retention-days: 30
+
+      - name: Analyze with OpenCode
+        if: ${{ github.event.inputs.analyze != 'false' }}
+        uses: anomalyco/opencode/github@latest
+        env:
+          OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
+        with:
+          model: opencode/deepseek-v4-flash-free
+          prompt: |
+            Read ./lighthouse-report.json.
+            Compare LCP, CLS, INP, TBT, FCP, SI with docs/performance-baseline.md.
+            For metrics that degraded by more than 10% relative to baseline,
+            identify likely culprits in recent commits and create an issue
+            with specific recommendations.
+            If no metric degraded — do not create an issue.
+            Reference the lighthouse-report artifact in the issue description.
