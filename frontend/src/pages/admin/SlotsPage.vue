@@ -51,7 +51,7 @@ async function save() {
       endTime: new Date(form.value.endTime).toISOString(),
     }
     const created = await createSlot(body)
-    slots.value.push(created)
+    slots.value.push({ ...created, bookings: [] })
     dialogOpen.value = false
   } catch {
     error.value = 'Failed to create slot.'
