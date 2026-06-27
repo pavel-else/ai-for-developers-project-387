@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/pavel-else/ai-for-developers-project-387/compare/calcom-v1.0.0...calcom-v1.0.1) (2026-06-27)
+
+
+### Bug Fixes
+
+* add empty bookings to created slot in SlotsPage ([3838083](https://github.com/pavel-else/ai-for-developers-project-387/commit/3838083fbbda79ae298e1bc93ba5bb972f2b51cf))
+
 ## 1.0.0 (2026-06-25)
 
 
