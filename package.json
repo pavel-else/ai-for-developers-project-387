@@ -12,6 +12,7 @@
   "devDependencies": {
     "@commitlint/cli": "^21.1.0",
     "@commitlint/config-conventional": "^21.1.0",
-    "@playwright/test": "^1.53.0"
+    "@playwright/test": "^1.53.0",
+    "lighthouse": "^13.4.0"
   }
 }

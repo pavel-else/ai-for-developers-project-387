@@ -14,11 +14,12 @@ on:
         description: "Запустить анализ агентом OpenCode"
         required: false
         type: boolean
-        default: true
+        default: false
 
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       id-token: write
       contents: write
@@ -36,12 +37,39 @@ jobs:
           URL="${{ inputs.url || 'https://ai-for-developers-project-386-h7vt.onrender.com/' }}"
           echo "url=$URL" >> "$GITHUB_OUTPUT"
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Warmup target URL
+        run: |
+          URL="${{ steps.url.outputs.url }}"
+          echo "Waiting for $URL to respond 200 (up to 90s)..."
+          deadline=$((SECONDS + 90))
+          while [ $SECONDS -lt $deadline ]; do
+            code=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "$URL" || echo "000")
+            if [ "$code" = "200" ]; then
+              echo "Target is warm (HTTP $code) after ${SECONDS}s."
+              exit 0
+            fi
+            echo "  got HTTP $code, retrying in 5s..."
+            sleep 5
+          done
+          echo "::error::Target $URL did not return HTTP 200 within 90s (Render cold start?)."
+          exit 1
+
       - name: Run Lighthouse
         run: |
-          npx lighthouse ${{ steps.url.outputs.url }} \
+          ./node_modules/.bin/lighthouse ${{ steps.url.outputs.url }} \
             --output=html --output=json \
             --output-path=./lighthouse-report \
-            --chrome-flags="--headless=new"
+            --chrome-flags="--headless=new" \
+            --max-wait-for-load=60000
 
       - name: Upload report artifact
         uses: actions/upload-artifact@v4
@@ -52,7 +80,7 @@ jobs:
 
       - name: Analyze with OpenCode
         id: analyze
-        if: ${{ github.event.inputs.analyze != 'false' }}
+        if: ${{ github.event.inputs.analyze == 'true' }}
         uses: anomalyco/opencode/github@latest
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
@@ -78,7 +106,7 @@ jobs:
             Create exactly one issue per run.
 
       - name: Close report issue
-        if: ${{ github.event.inputs.analyze != 'false' }}
+        if: ${{ github.event.inputs.analyze == 'true' }}
         uses: actions/github-script@v7
         with:
           script: |
